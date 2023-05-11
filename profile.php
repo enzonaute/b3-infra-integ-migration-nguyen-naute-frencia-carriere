@@ -3,36 +3,25 @@
 
 <head>
     <title>Profil - Mes infos></title>
+    <script type = "text/javascript" src="functions.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-<h1>Profil</h1>
-
-<script>
-    function deleteAllCookies() {
-        var cookies = document.cookie.split(";");
-
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        }
-    }
-
-    function clearAndRedirect(link) {
-        deleteAllCookies();
-        document.location = link;
-    }
-</script>
-<h2 class="disconnect"><a href="javascript:clearAndRedirect('index.php')">Deconnexion</a></h2>
+<div class="title">
+    <h1>Profil</h1>
+</div>
+<div class="menu">
+    <h2 class="disconnect"><a href="javascript:clearAndRedirect('index.php')">Deconnexion</a></h2>
+    <h2><a href="forms.php">Formulaires</a></h2>
+</div>
 
 <?php
 session_start();
 
-require_once('db_connect.php');
+require_once('Database.php');
 
+$conn = Database::getInstance();
 
 // Sécurité, fait l'équivalent d'une route sur un framework
 if (!isset($_SESSION['user_id'])) {
@@ -63,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     else {
         $query = "UPDATE users SET name=:name, surname=:surname, email=:email, password=:password WHERE id=:user_id";
         $stmt = $conn->prepare($query);
-        //$stmt->bind_param('ssssi', $name, $surname, $email, password_hash($password, PASSWORD_DEFAULT), $user_id);
+
         if (!$stmt->execute(["name"=>$name,"surname"=>$surname,"email"=>$email,"password"=>password_hash($password, PASSWORD_DEFAULT),"user_id"=>$user_id])) {
             $warning = 'Failed to update information. Please try again.';
         }
@@ -73,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
     $query = "DELETE FROM users WHERE id=:user_id";
     $stmt = $conn->prepare($query);
-    //$stmt->bind_param('ssssi', $name, $surname, $email, password_hash($password, PASSWORD_DEFAULT), $user_id);
+
     if (!$stmt->execute(["user_id"=>$user_id])) {
         $warning = 'Failed to update information. Please try again.';
     }

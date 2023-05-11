@@ -9,6 +9,22 @@ body {
     padding: 20px;
 }
 
+.disconnect{
+    color:red;
+    text-align: right;
+    font-weight:bold;
+    font-family: Arial, sans-serif;
+}
+
+.menu{
+    text-align: right;
+}
+
+.title h1 {
+    width:100%;
+    text-align:center;
+}
+
 h1 {
     font-size: 24px;
     font-weight: bold;
@@ -65,11 +81,4 @@ input[type="submit"]:hover {
 
 button.delete{
     color:red;
-}
-
-.disconnect{
-    color:red;
-    text-align: right;
-    font-weight:bold;
-    font-family: Arial, sans-serif;
 }

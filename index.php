@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-require_once('db_connect.php');
+require_once('Database.php');
+
+$conn = Database::getInstance();
 
 // Traitement du formulaire de connexion
 if (isset($_POST['login'])) {
