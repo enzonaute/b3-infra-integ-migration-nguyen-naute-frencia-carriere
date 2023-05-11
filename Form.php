@@ -7,7 +7,7 @@ function getReceiverID(string $receiver_email): int{
     $stmt = Database::getInstance()->prepare($query);
     $stmt->execute(['email'=>$receiver_email]);
     $row = $stmt->fetch();
-    return $row("email");
+    return $row["id"];
 }
 
 class Form {
@@ -28,7 +28,9 @@ class Form {
     }
 
     public function send(): bool {
-        $query = "INSERT INTO forms VALUES(sender_email=:email, sender_id=:sender_id, receiver_email=:receiver_email, object=:object, message=:message) ";
+        $query = "INSERT INTO forms (sender_email, sender_id, receiver_email, receiver_id, object, message) 
+                    VALUES (:sender_email, :sender_id, :receiver_email, :receiver_id, :object, :message)";
+
         $stmt = Database::getInstance()->prepare($query);
         if (!$stmt->execute([
             "sender_email"=>$this->sender_email,
