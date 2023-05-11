@@ -62,3 +62,14 @@ input[type="submit"]:hover {
     color: green;
     margin-bottom: 20px;
 }
+
+button.delete{
+    color:red;
+}
+
+.disconnect{
+    color:red;
+    text-align: right;
+    font-weight:bold;
+    font-family: Arial, sans-serif;
+}

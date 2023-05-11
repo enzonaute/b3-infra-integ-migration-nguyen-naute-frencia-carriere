@@ -1,50 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
-    <title>Profile - My Web App</title>
+    <title>Profil - Mes infos></title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-<h1>Profile</h1>
+<h1>Profil</h1>
+
+<script>
+    function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+    }
+
+    function clearAndRedirect(link) {
+        deleteAllCookies();
+        document.location = link;
+    }
+</script>
+<h2 class="disconnect"><a href="javascript:clearAndRedirect('index.php')">Deconnexion</a></h2>
 
 <?php
 session_start();
 
 require_once('db_connect.php');
 
+
+// Sécurité, fait l'équivalent d'une route sur un framework
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
 }
-
-//if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-//    $user_id = $_SESSION['user_id'];
-//
-//    $stmt = $conn->prepare("SELECT * FROM users WHERE id = :user_id");
-//    $stmt->execute(["user_id" => $user_id]);
-//    $row = $stmt->fetch();
-//    // Pour debugger
-////    foreach ($row as $item){
-////        //echo $item ."</br>";
-////    }
-//
-//    $name = $row['name'];
-//    $surname = $row['surname'];
-//    $email = $row['email'];
-//    //$password = $row['password'];
-//
-//    $user_id = $_SESSION['user_id'];
-//    $warning = '';
-//}
 
 
 //On récupère l'identifiant stocké dans le cookie
 $user_id = $_SESSION['user_id'];
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $name = trim($_POST['name']);
     $surname = trim($_POST['surname']);
     $email = trim($_POST['email']);
@@ -69,6 +70,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<h1 class='modifs'>Modifications enregistrées</h1>";
     }
 }
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
+    $query = "DELETE FROM users WHERE id=:user_id";
+    $stmt = $conn->prepare($query);
+    //$stmt->bind_param('ssssi', $name, $surname, $email, password_hash($password, PASSWORD_DEFAULT), $user_id);
+    if (!$stmt->execute(["user_id"=>$user_id])) {
+        $warning = 'Failed to update information. Please try again.';
+    }
+    header('Location: index.php');
+    exit();
+}
 
 $query = "SELECT name, surname, email FROM users WHERE id=:user_id";
 $stmt = $conn->prepare($query);
@@ -83,23 +94,26 @@ $editable = isset($_GET['edit']) && $_GET['edit'] === 'true';
 ?>
 
 <form method="post" action="">
-    <label for="name">Name:</label>
+    <label for="name">Nom:</label>
     <input type="text" id="name" name="name" value="<?php echo $name; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
-    <label for="surname">Surname:</label>
+    <label for="surname">Prénom:</label>
     <input type="text" id="surname" name="surname" value="<?php echo $surname; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" value="<?php echo $email; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
-    <label for="password">Password:</label>
+    <label for="password">Mot de passe:</label>
     <input type="password" id="password" name="password" value="<?php echo str_repeat('*', 10); ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <?php if (!$editable): ?>
-        <a href="?edit=true"><button type="button">Edit</button></a>
+        <a href="?edit=true"><button type="button">Modifier</button></a>
     <?php else: ?>
-        <button type="submit" name="save">Save</button>
+        <button type="submit" name="save">Enregistrer</button>
     <?php endif; ?>
+    <br>
+    <br>
+    <button class="delete" type="submit" onclick="clearAndRedirect('index.php')" name="delete"><b>SUPPRIMER LE COMPTE</b></button>
 </form>
 
 <script>
@@ -115,41 +129,3 @@ $editable = isset($_GET['edit']) && $_GET['edit'] === 'true';
 </script>
 </body>
 </html>
-<!---->
-<?php
-//}
-//else{
-//    ?>
-<!---->
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Erreur</title>-->
-<!--    <link rel="stylesheet" href="style.css">-->
-<!--</head>-->
-<!--<body>-->
-<!--<div class="container">-->
-<!--    <h1>Oups, il y a eu une erreur</h1>-->
-<!--    <div class="error">-->
-<!--        <p>-->
-<!--            --><?php
-//            $value = "";
-//            foreach ($_POST as $value){
-//                echo $value;
-//            }?>
-<!--        </p>-->
-<!--    </div>-->
-<!--    <div class="error">-->
-<!--        <p>Veuillez vous reconnecter :-->
-<!--            <a href="index.php">Accueil-->
-<!--            </a>-->
-<!--        </p>-->
-<!--    </div>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->
-<?php
-//}
-
-

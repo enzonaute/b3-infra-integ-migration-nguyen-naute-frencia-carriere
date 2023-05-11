@@ -40,7 +40,7 @@ if (isset($_POST['register'])) {
     } else {
         // Vérification de l'existence d'un utilisateur avec le même nom d'utilisateur ou la même adresse e-mail
         $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
-        $stmt->execute(['name' => $name, 'email' => $email]);
+        $stmt->execute(['email' => $email]);
         $row = $stmt->fetch();
 
         if ($row) {
@@ -48,8 +48,8 @@ if (isset($_POST['register'])) {
         } else {
             // Insertion des informations de l'utilisateur dans la base de données
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
-            $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashed_password]);
+            $stmt = $conn->prepare("INSERT INTO users (name, surname, email, password) VALUES (:name, :surname, :email, :password)");
+            $stmt->execute(['name' => $name,'surname'=>$surname, 'email' => $email, 'password' => $hashed_password]);
 
             $_SESSION['user_id'] = $conn->lastInsertId();
             header("Location: profile.php");
@@ -60,7 +60,7 @@ if (isset($_POST['register'])) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <title>Application d'inscription</title>
     <link rel="stylesheet" href="style.css">
