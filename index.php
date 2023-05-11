@@ -1,32 +1,20 @@
 <?php
 session_start();
 
-// Connexion à la base de données
-$servername = "localhost";
-$username = "appWeb";
-$password = "";
-$dbname = "app_web";
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
+require_once('db_connect.php');
 
 // Traitement du formulaire de connexion
 if (isset($_POST['login'])) {
-    $username = $_POST['username'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
 
     // Vérification des informations de connexion
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username=:username");
-    $stmt->execute(['username' => $username]);
-    $user = $stmt->fetch();
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
+    $stmt->execute(['email' => $email]);
+    $row = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
+    if ($row && password_verify($password, $row['password'])) {
+        $_SESSION['user_id'] = $row['id'];
         header("Location: profile.php");
         exit();
     } else {
@@ -36,13 +24,14 @@ if (isset($_POST['login'])) {
 
 // Traitement du formulaire d'inscription
 if (isset($_POST['register'])) {
-    $username = $_POST['username'];
+    $name = $_POST['name'];
+    $surname = $_POST['surname'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
     // Vérification des champs obligatoires
-    if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
+    if (empty($name) || empty($email) || empty($password) || empty($confirm_password)) {
         $register_error = "Tous les champs sont obligatoires";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $register_error = "Adresse e-mail invalide";
@@ -50,17 +39,17 @@ if (isset($_POST['register'])) {
         $register_error = "Les mots de passe ne correspondent pas";
     } else {
         // Vérification de l'existence d'un utilisateur avec le même nom d'utilisateur ou la même adresse e-mail
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username=:username OR email=:email");
-        $stmt->execute(['username' => $username, 'email' => $email]);
-        $user = $stmt->fetch();
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->execute(['name' => $name, 'email' => $email]);
+        $row = $stmt->fetch();
 
-        if ($user) {
+        if ($row) {
             $register_error = "Nom d'utilisateur ou adresse e-mail déjà utilisé";
         } else {
             // Insertion des informations de l'utilisateur dans la base de données
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
-            $stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashed_password]);
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+            $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashed_password]);
 
             $_SESSION['user_id'] = $conn->lastInsertId();
             header("Location: profile.php");
@@ -83,8 +72,8 @@ if (isset($_POST['register'])) {
 
 <h1>Connexion</h1>
 <form method="post">
-    <label for="username">Nom d'utilisateur
-        <input type="text" name="username" id="username" required>
+    <label for="email">Adresse e-mail
+        <input type="email" name="email" id="email" required>
     </label><br>
     <label for="password">Mot de passe
         <input type="password" name="password" id="password" required>
@@ -96,8 +85,11 @@ if (isset($_POST['register'])) {
 <?php } ?>
 <h1>Inscription</h1>
 <form method="post">
-    <label for="username">Nom d'utilisateur
-        <input type="text" name="username" id="username" required>
+    <label for="name">Nom
+        <input type="text" name="name" id="name" required>
+    </label><br>
+    <label for="surname">Prénom
+        <input type="text" name="surname" id="surname" required>
     </label><br>
     <label for="email">Adresse e-mail
         <input type="email" name="email" id="email" required>
