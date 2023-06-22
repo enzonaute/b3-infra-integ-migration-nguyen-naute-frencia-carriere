@@ -49,7 +49,7 @@ class Form {
         // implementation of the read() method
         // returns true if the message was successfully read, false otherwise
         // you can use the attributes of the class to identify the message to be read and retrieve its content from the appropriate source (e.g. email inbox, messaging service, etc.)
-        return "";
+        return $this->message;
     }
 
 
