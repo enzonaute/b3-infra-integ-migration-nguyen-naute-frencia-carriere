@@ -26,11 +26,34 @@ class FormTest extends TestCase
 
     public function testSend()
     {
+        $conn = Database::getInstance();
+
+        // On compte le nombre de lignes avant l'envoi d'un nouveau formulaire
+        $stmt = $conn->prepare("SELECT * FROM forms WHERE receiver_id = :user_id");
+        $stmt->execute(['user_id'=>$this->receiver_id]);
+        $row_count_before = $stmt->rowCount();
+
         $form = new Form($this->sender_email, $this->sender_id, $this->receiver_email, $this->object, $this->message);
         $form->send();
 
+        // On compte le nombre de lignes avant l'envoi d'un nouveau formulaire
+        $stmt = $conn->prepare("SELECT * FROM forms WHERE receiver_id = :user_id");
+        $stmt->execute(['user_id'=>$this->receiver_id]);
+        $row_count_after = $stmt->rowCount();
+
+        // Comparaison des 2 valeurs de nombre de lignes
+        self::assertEquals($row_count_before+1,$row_count_after);
+
+    }
+
+    public function testRead()
+    {
         $conn = Database::getInstance();
 
+        $formToSend = new Form($this->sender_email, $this->sender_id, $this->receiver_email, $this->object, $this->message);
+        $formToSend->send();
+
+        // Retrieve all forms for the current user
         $stmt = $conn->prepare("SELECT * FROM forms WHERE receiver_id = :user_id");
         $stmt->execute(['user_id'=>$this->receiver_id]);
         $received_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
