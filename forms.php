@@ -9,8 +9,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Include the Form class
-require_once 'Form.php';
-require_once('Database.php');
+require_once 'classes/Form.php';
+require_once('classes/Database.php');
 
 $conn = Database::getInstance();
 

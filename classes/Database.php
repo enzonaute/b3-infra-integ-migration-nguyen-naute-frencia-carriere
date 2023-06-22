@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Singleton permettant au serveur une connexion permanente à la base de données
+ * On peut alors récupérer l'instance de la connexion courante.
+ */
 
 class Database
 {

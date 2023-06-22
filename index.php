@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once('Database.php');
+require_once('classes/Database.php');
 
 $conn = Database::getInstance();
 
@@ -17,7 +17,7 @@ if (isset($_POST['login'])) {
 
     if ($row && password_verify($password, $row['password'])) {
         $_SESSION['user_id'] = $row['id'];
-        header("Location: profile.php");
+        header("Location: forms.php");
         exit();
     } else {
         $login_error = "Nom d'utilisateur ou mot de passe invalide";
@@ -54,7 +54,7 @@ if (isset($_POST['register'])) {
             $stmt->execute(['name' => $name,'surname'=>$surname, 'email' => $email, 'password' => $hashed_password]);
 
             $_SESSION['user_id'] = $conn->lastInsertId();
-            header("Location: profile.php");
+            header("Location: forms.php");
             exit();
         }
     }

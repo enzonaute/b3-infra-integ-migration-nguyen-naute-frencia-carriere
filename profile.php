@@ -19,7 +19,7 @@
 <?php
 session_start();
 
-require_once('Database.php');
+require_once('classes/Database.php');
 
 $conn = Database::getInstance();
 
