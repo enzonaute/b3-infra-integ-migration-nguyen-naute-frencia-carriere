@@ -17,18 +17,19 @@
 </div>
 
 <?php
-session_start();
 
 require_once('classes/Database.php');
+require_once('classes/User.php');
+
+session_start();
 
 $conn = Database::getInstance();
 
 // Sécurité, fait l'équivalent d'une route sur un framework
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user'])) {
     header('Location: index.php');
     exit();
 }
-
 
 //On récupère l'objet User stocké dans le cookie
 $user = unserialize($_SESSION['user']);
@@ -50,24 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     }
     // Update fields
     else {
-        $query = "UPDATE users SET name=:name, surname=:surname, email=:email, password=:password WHERE id=:user_id";
-        $stmt = $conn->prepare($query);
-
-        if (!$stmt->execute(["name"=>$name,"surname"=>$surname,"email"=>$email,"password"=>password_hash($password, PASSWORD_DEFAULT),"user_id"=>$user->id])) {
-            $warning = 'Failed to update information. Please try again.';
+        $user->setAttributes($name,$surname,$email);
+        if(!$user->update(password_hash($password, PASSWORD_DEFAULT))){
+            echo "<h1 class='modifs'>Erreur lors de la modification</h1>";
         }
+
         echo "<h1 class='modifs'>Modifications enregistrées</h1>";
     }
 }
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
-    $query = "DELETE FROM users WHERE id=:user_id";
-    $stmt = $conn->prepare($query);
-
-    if (!$stmt->execute(["user_id"=>$user->id])) {
-        $warning = 'Failed to update information. Please try again.';
+    if (!$user->delete()) {
+        echo "<h1 class='modifs'>Erreur lors de la suppression du compte.</h1>";
     }
-    header('Location: index.php');
-    exit();
+    else {
+        header('Location: index.php');
+        exit();
+    }
 }
 
 //$query = "SELECT name, surname, email FROM users WHERE id=:user_id";

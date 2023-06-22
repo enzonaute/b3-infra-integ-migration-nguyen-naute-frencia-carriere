@@ -7,7 +7,7 @@
 
 class Database
 {
-    private $environment = "test";
+    private $environment = "production";
 
     private static $_instance;
     // Connexion à la base de données
@@ -23,7 +23,7 @@ class Database
     private function __construct()
     {
         if($this->environment == "production"){
-            $this->servername = "34.79.158.109";
+            $this->servername = "localhost";
             $this->username = "root";
             $this->password = "";
             $this->dbname = "app_web";

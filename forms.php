@@ -1,16 +1,18 @@
 <?php
-// Start session
-session_start();
 
 // Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
     exit;
 }
 
 // Include the Form class
 require_once 'classes/Form.php';
 require_once('classes/Database.php');
+require_once('classes/User.php');
+
+// Start session
+session_start();
 
 $conn = Database::getInstance();
 
@@ -35,16 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
-$user_id = $_SESSION['user_id'];
+$user = unserialize($_SESSION['user']);
 
 // Retrieve all forms for the current user
 $stmt = $conn->prepare("SELECT * FROM forms WHERE receiver_id = :user_id");
-$stmt->execute(['user_id'=>$user_id]);
+$stmt->execute(['user_id'=>$user->id]);
 $received_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Retrieve all forms for the current user
 $stmt = $conn->prepare("SELECT * FROM forms WHERE sender_id = :user_id");
-$stmt->execute(['user_id'=>$user_id]);
+$stmt->execute(['user_id'=>$user->id]);
 $sent_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 

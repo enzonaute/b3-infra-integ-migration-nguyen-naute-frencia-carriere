@@ -1,7 +1,9 @@
 <?php
+require_once('classes/Database.php');
+require_once('classes/User.php');
+
 session_start();
 
-require_once('classes/Database.php');
 
 $conn = Database::getInstance();
 
@@ -11,13 +13,14 @@ if (isset($_POST['login'])) {
     $password = $_POST['password'];
 
     // Vérification des informations de connexion
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email");
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email=:email LIMIT 1");
     $stmt->execute(['email' => $email]);
     $row = $stmt->fetch();
 
     if ($row && password_verify($password, $row['password'])) {
-        $_SESSION['user_id'] = $row['id'];
-        header("Location: forms.php");
+        $user = User::getFromEmail($email);
+        $_SESSION['user'] = serialize($user);
+        header("Location: profile.php");
         exit();
     } else {
         $login_error = "Nom d'utilisateur ou mot de passe invalide";
@@ -51,7 +54,8 @@ if (isset($_POST['register'])) {
             // Insertion des informations de l'utilisateur dans la base de données
             $user = new User($name,$surname,$email);
             $user->register(password_hash($password, PASSWORD_DEFAULT));
-            header("Location: forms.php");
+
+            header("Location: profile.php");
             exit();
         }
     }
