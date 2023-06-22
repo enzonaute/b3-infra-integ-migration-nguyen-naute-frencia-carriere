@@ -1,0 +1,15 @@
+{
+  "name": "vendor_name/b3-infra-integ-migration-nguyen-naute-frencia-carriere",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "EPSI",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "9.*"
+  }
+}
