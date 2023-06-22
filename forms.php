@@ -14,6 +14,8 @@ require_once('classes/Database.php');
 
 $conn = Database::getInstance();
 
+$user = unserialize($_SESSION['user']);
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
