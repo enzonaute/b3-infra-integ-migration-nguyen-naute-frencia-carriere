@@ -77,13 +77,13 @@ $_SESSION['user'] = serialize($user);
 
 <form method="post" action="">
     <label for="name">Nom:</label>
-    <input type="text" id="name" name="name" value="<?php echo $user->name; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
+    <input type="text" id="name" name="name" value="<?php echo $user->getName(); ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="surname">Prénom:</label>
-    <input type="text" id="surname" name="surname" value="<?php echo $user->surname; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
+    <input type="text" id="surname" name="surname" value="<?php echo $user->getSurname(); ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="<?php echo $user->email; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
+    <input type="email" id="email" name="email" value="<?php echo $user->getEmail(); ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="password">Mot de passe:</label>
     <input type="password" id="password" name="password" value="<?php echo str_repeat('*', 10); ?>" <?php if (!$editable) echo 'disabled'; ?> required>

@@ -6,12 +6,12 @@ require_once('classes/Database.php');
 // TODO : Les attributes phone et address ne sont pas présentement utilisés
 class User
 {
-    public $id;
-    public $name;
-    public $surname;
-    public $email;
-    public $phone;
-    public $address;
+    private $id;
+    private $name;
+    private $surname;
+    private $email;
+    private $phone;
+    private $address;
 
     /**
      * @param $id
@@ -109,4 +109,70 @@ class User
         }
         return true;
     }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    /**
+     * @param mixed $surname
+     */
+    public function setSurname($surname): void
+    {
+        $this->surname = $surname;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email): void
+    {
+        $this->email = $email;
+    }
+
+
 }

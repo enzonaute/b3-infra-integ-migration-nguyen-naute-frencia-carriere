@@ -24,8 +24,8 @@ $user = unserialize($_SESSION['user']);
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
-    $sender_email = $user->email;
-    $sender_id = $user->id;
+    $sender_email = $user->getEmail();
+    $sender_id = $user->getId();
     $receiver_email = $_POST['receiver_email'];
     $object = $_POST['object'];
     $message = $_POST['message'];
@@ -44,12 +44,12 @@ $user = unserialize($_SESSION['user']);
 
 // Retrieve all forms for the current user
 $stmt = $conn->prepare("SELECT * FROM forms WHERE receiver_id = :user_id");
-$stmt->execute(['user_id'=>$user->id]);
+$stmt->execute(['user_id'=>$user->getId()]);
 $received_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Retrieve all forms for the current user
 $stmt = $conn->prepare("SELECT * FROM forms WHERE sender_id = :user_id");
-$stmt->execute(['user_id'=>$user->id]);
+$stmt->execute(['user_id'=>$user->getId()]);
 $sent_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
@@ -75,7 +75,7 @@ $sent_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <h1>Send a form</h1>
 <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-    <input type="hidden" name="sender_id" value="<?php echo $user->id; ?>">
+    <input type="hidden" name="sender_id" value="<?php echo $user->getId(); ?>">
 
     <label for="receiver_email">Receiver email:</label>
     <input type="email" name="receiver_email" id="receiver_email" maxlength="50" required><br>

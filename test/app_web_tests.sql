@@ -38,10 +38,11 @@ CREATE TABLE IF NOT EXISTS `forms` (
   `object` varchar(50) NOT NULL,
   `message` varchar(500) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_sender_id` (`sender_id`),
-  KEY `fk_sender_email` (`sender_email`),
-  KEY `fk_receiver_id` (`receiver_id`),
-  KEY `fk_receiver_email` (`receiver_email`)
+    -- Je met ces clés étrangères en suspens, ça cause des problèmes lors de la suppression d'utilisateurs
+--   KEY `fk_sender_id` (`sender_id`),
+--   KEY `fk_sender_email` (`sender_email`),
+--   KEY `fk_receiver_id` (`receiver_id`),
+--   KEY `fk_receiver_email` (`receiver_email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
