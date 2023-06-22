@@ -1,10 +1,6 @@
 <?php
 
-// Check if the user is logged in
-if (!isset($_SESSION['user'])) {
-    header("Location: index.php");
-    exit;
-}
+
 
 // Include the Form class
 require_once 'classes/Form.php';
@@ -13,6 +9,12 @@ require_once('classes/User.php');
 
 // Start session
 session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
+    exit;
+}
 
 $conn = Database::getInstance();
 

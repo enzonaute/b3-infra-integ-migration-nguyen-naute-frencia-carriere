@@ -60,23 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     }
 }
 elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
-    if (!$user->delete()) {
+    if (!$user->deleteFromDB()) {
         echo "<h1 class='modifs'>Erreur lors de la suppression du compte.</h1>";
     }
     else {
-        header('Location: index.php');
+        echo "<script type='type/JavaScript'>clearAndRedirect('index.php');</script>";
+        header("Location: index.php");
         exit();
     }
 }
-
-//$query = "SELECT name, surname, email FROM users WHERE id=:user_id";
-//$stmt = $conn->prepare($query);
-//$stmt->execute(["user_id"=>$user->id]);
-//$row = $stmt->fetch();
-//
-//$name = $row['name'];
-//$surname = $row['surname'];
-//$email = $row['email'];
 
 $editable = isset($_GET['edit']) && $_GET['edit'] === 'true';
 
@@ -104,7 +96,7 @@ $_SESSION['user'] = serialize($user);
     <?php endif; ?>
     <br>
     <br>
-    <button class="delete" type="submit" onclick="clearAndRedirect('index.php')" name="delete"><b>SUPPRIMER LE COMPTE</b></button>
+    <button class="delete" type="submit" name="delete"><b>SUPPRIMER LE COMPTE</b></button>
 </form>
 
 <script>

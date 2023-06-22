@@ -98,13 +98,13 @@ class User
         return true;
     }
 
-    public function delete():bool{
+    public function deleteFromDB():bool{
         $conn = Database::getInstance();
 
-        $query = "DELETE FROM users WHERE id=:user_id";
+        $query = "DELETE FROM users WHERE email=:email";
         $stmt = $conn->prepare($query);
 
-        if (!$stmt->execute(["user_id"=>$this->id])) {
+        if (!$stmt->execute(["email"=>$this->email])) {
             return false;
         }
         return true;
