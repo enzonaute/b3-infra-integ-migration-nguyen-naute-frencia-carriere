@@ -30,8 +30,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 
-//On récupère l'identifiant stocké dans le cookie
-$user_id = $_SESSION['user_id'];
+//On récupère l'objet User stocké dans le cookie
+$user = unserialize($_SESSION['user']);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         $query = "UPDATE users SET name=:name, surname=:surname, email=:email, password=:password WHERE id=:user_id";
         $stmt = $conn->prepare($query);
 
-        if (!$stmt->execute(["name"=>$name,"surname"=>$surname,"email"=>$email,"password"=>password_hash($password, PASSWORD_DEFAULT),"user_id"=>$user_id])) {
+        if (!$stmt->execute(["name"=>$name,"surname"=>$surname,"email"=>$email,"password"=>password_hash($password, PASSWORD_DEFAULT),"user_id"=>$user->id])) {
             $warning = 'Failed to update information. Please try again.';
         }
         echo "<h1 class='modifs'>Modifications enregistrées</h1>";
@@ -63,34 +63,37 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
     $query = "DELETE FROM users WHERE id=:user_id";
     $stmt = $conn->prepare($query);
 
-    if (!$stmt->execute(["user_id"=>$user_id])) {
+    if (!$stmt->execute(["user_id"=>$user->id])) {
         $warning = 'Failed to update information. Please try again.';
     }
     header('Location: index.php');
     exit();
 }
 
-$query = "SELECT name, surname, email FROM users WHERE id=:user_id";
-$stmt = $conn->prepare($query);
-$stmt->execute(["user_id"=>$user_id]);
-$row = $stmt->fetch();
-
-$name = $row['name'];
-$surname = $row['surname'];
-$email = $row['email'];
+//$query = "SELECT name, surname, email FROM users WHERE id=:user_id";
+//$stmt = $conn->prepare($query);
+//$stmt->execute(["user_id"=>$user->id]);
+//$row = $stmt->fetch();
+//
+//$name = $row['name'];
+//$surname = $row['surname'];
+//$email = $row['email'];
 
 $editable = isset($_GET['edit']) && $_GET['edit'] === 'true';
+
+
+$_SESSION['user'] = serialize($user);
 ?>
 
 <form method="post" action="">
     <label for="name">Nom:</label>
-    <input type="text" id="name" name="name" value="<?php echo $name; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
+    <input type="text" id="name" name="name" value="<?php echo $user->name; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="surname">Prénom:</label>
-    <input type="text" id="surname" name="surname" value="<?php echo $surname; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
+    <input type="text" id="surname" name="surname" value="<?php echo $user->surname; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" value="<?php echo $email; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
+    <input type="email" id="email" name="email" value="<?php echo $user->email; ?>" <?php if (!$editable) echo 'disabled'; ?> required>
 
     <label for="password">Mot de passe:</label>
     <input type="password" id="password" name="password" value="<?php echo str_repeat('*', 10); ?>" <?php if (!$editable) echo 'disabled'; ?> required>

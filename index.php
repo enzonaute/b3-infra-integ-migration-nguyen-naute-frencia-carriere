@@ -49,11 +49,8 @@ if (isset($_POST['register'])) {
             $register_error = "Nom d'utilisateur ou adresse e-mail déjà utilisé";
         } else {
             // Insertion des informations de l'utilisateur dans la base de données
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (name, surname, email, password) VALUES (:name, :surname, :email, :password)");
-            $stmt->execute(['name' => $name,'surname'=>$surname, 'email' => $email, 'password' => $hashed_password]);
-
-            $_SESSION['user_id'] = $conn->lastInsertId();
+            $user = new User($name,$surname,$email);
+            $user->register(password_hash($password, PASSWORD_DEFAULT));
             header("Location: forms.php");
             exit();
         }
