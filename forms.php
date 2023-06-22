@@ -18,13 +18,14 @@ if (!isset($_SESSION['user'])) {
 
 $conn = Database::getInstance();
 
+//On récupère l'objet User stocké dans le cookie
 $user = unserialize($_SESSION['user']);
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
-    $sender_email = $_POST['sender_email'];
-    $sender_id = $_POST['sender_id'];
+    $sender_email = $user->email;
+    $sender_id = $user->id;
     $receiver_email = $_POST['receiver_email'];
     $object = $_POST['object'];
     $message = $_POST['message'];
@@ -74,10 +75,7 @@ $sent_forms = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <h1>Send a form</h1>
 <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
-    <label for="sender_email">Sender email:</label>
-    <input type="email" name="sender_email" id="sender_email" maxlength="50" required><br>
-
-    <input type="hidden" name="sender_id" value="<?php echo $_SESSION['user_id']; ?>">
+    <input type="hidden" name="sender_id" value="<?php echo $user->id; ?>">
 
     <label for="receiver_email">Receiver email:</label>
     <input type="email" name="receiver_email" id="receiver_email" maxlength="50" required><br>

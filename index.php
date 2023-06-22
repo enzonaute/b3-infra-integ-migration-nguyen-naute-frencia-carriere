@@ -19,6 +19,7 @@ if (isset($_POST['login'])) {
 
     if ($row && password_verify($password, $row['password'])) {
         $user = User::getFromEmail($email);
+
         $_SESSION['user'] = serialize($user);
         header("Location: profile.php");
         exit();

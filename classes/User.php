@@ -21,15 +21,15 @@ class User
      * @param string $phone optional
      * @param string $address optional
      */
-    public function __construct($name, $surname, $email, $id ="", string $phone = "", string $address = "")
+    public function __construct($name, $surname, $email, int $id = -1, string $phone = "", string $address = "")
     {
         $this->name = $name;
         $this->surname = $surname;
         $this->email = $email;
         $this->phone = $phone;
         $this->address = $address;
+        $this->id = $id;
     }
-
 
     public static function getFromEmail($email): User|bool {
         $conn = Database::getInstance();

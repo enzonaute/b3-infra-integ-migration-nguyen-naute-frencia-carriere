@@ -34,7 +34,6 @@ if (!isset($_SESSION['user'])) {
 //On récupère l'objet User stocké dans le cookie
 $user = unserialize($_SESSION['user']);
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $name = trim($_POST['name']);
     $surname = trim($_POST['surname']);
